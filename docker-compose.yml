@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Apache 2.4 - デフォルト設定（問題再現用）
+  # ダブルスラッシュ // が / に正規化される
+  apache-default:
+    build:
+      context: ./apache-default
+      dockerfile: Dockerfile
+    container_name: apache-default
+    ports:
+      - "8080:80"
+    volumes:
+      - ./cgi-bin:/usr/local/apache2/cgi-bin:ro
+    networks:
+      - apache-test
+
+  # Apache 2.4 - 修正版（THE_REQUESTを使用）
+  # ダブルスラッシュ // を保持する
+  apache-fixed:
+    build:
+      context: ./apache-fixed
+      dockerfile: Dockerfile
+    container_name: apache-fixed
+    ports:
+      - "8081:80"
+    volumes:
+      - ./cgi-bin:/usr/local/apache2/cgi-bin:ro
+    networks:
+      - apache-test
+
+networks:
+  apache-test:
+    driver: bridge
